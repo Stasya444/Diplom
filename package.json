@@ -1,0 +1,48 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
+  "dependencies": {
+    "@nuxt/fonts": "^0.11.1",
+    "@nuxt/scripts": "^0.11.6",
+    "@nuxt/ui": "^3.1.0",
+    "@prisma/client": "^6.7.0",
+    "@tailwindcss/vite": "^4.1.4",
+    "@unhead/vue": "^2.0.8",
+    "aos": "^2.3.4",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.2",
+    "jsonwebtoken": "^9.0.2",
+    "nuxt": "^3.16.2",
+    "typescript": "^5.8.3",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@tailwindcss/typography": "^0.5.16",
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/node": "^22.15.21",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "autoprefixer": "^10.4.21",
+    "nuxt-icon": "^1.0.0-beta.7",
+    "postcss": "^8.5.3",
+    "prisma": "^6.7.0",
+    "tailwindcss": "^4.1.4",
+    "tsx": "^4.19.4",
+    "twin.macro": "^3.4.1"
+  }
+}

@@ -1,0 +1,2 @@
+ALTER TABLE "Photographer" ALTER COLUMN "isVerified" DROP NOT NULL,
+ALTER COLUMN "isVerified" DROP DEFAULT;

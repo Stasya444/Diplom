@@ -1,0 +1,58 @@
+enum Role {
+  guest
+  photographer
+  admin
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role Role @default(guest)
+  createdAt DateTime @default(now())
+}
+
+model Photographer {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  city        String?
+  style       String?
+  price       Int?
+  about       String?
+  experience  Int?      // ← обов'язково має бути
+  ordersCount Int?      // ← і це
+  avatar      String?
+  isVerified  Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  photos      Photo[]
+  ratings     Rating[]
+}
+
+model Photo {
+  id             Int          @id @default(autoincrement())
+  url            String
+  title          String?
+  isFeatured     Boolean      @default(false)
+  photographer   Photographer @relation(fields: [photographerId], references: [id])
+  photographerId Int
+}
+
+model Rating {
+  id             Int          @id @default(autoincrement())
+  author         String
+  comment        String
+  rating         Int
+  photographer   Photographer @relation(fields: [photographerId], references: [id])
+  photographerId Int
+  createdAt      DateTime     @default(now())
+}

@@ -1,0 +1,6 @@
+@import "tailwindcss";
+@tailwind utilities;
+/* Дополнительные стили */
+body {
+  font-family: "Helvetica", sans-serif;
+}
