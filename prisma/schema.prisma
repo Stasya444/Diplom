@@ -29,13 +29,14 @@ model Photographer {
   style       String?
   price       Int?
   about       String?
-  experience  Int?      // ← обов'язково має бути
-  ordersCount Int?      // ← і це
+  experience  Int?     
+  ordersCount Int?      
   avatar      String?
   isVerified  Boolean   @default(false)
   createdAt   DateTime  @default(now())
   photos      Photo[]
   ratings     Rating[]
+  bookings       Booking[]
 }
 
 model Photo {
@@ -55,4 +56,14 @@ model Rating {
   photographer   Photographer @relation(fields: [photographerId], references: [id])
   photographerId Int
   createdAt      DateTime     @default(now())
+}
+
+model Booking {
+  id             Int       @id @default(autoincrement())
+  name           String
+  phone          String
+  date           DateTime
+  photographer   Photographer @relation(fields: [photographerId], references: [id])
+  photographerId Int
+  createdAt      DateTime @default(now())
 }

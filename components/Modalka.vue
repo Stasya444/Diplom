@@ -7,7 +7,6 @@
     <div
       class="bg-white/20 backdrop-blur-lg border border-white/40 rounded-3xl shadow-lg relative max-w-md w-full p-8"
     >
-      <!-- Кнопка закрытия -->
       <button
         @click="close"
         class="absolute top-4 right-4 p-1 text-white/70 hover:text-white transition-transform hover:rotate-90"
@@ -27,7 +26,6 @@
         </svg>
       </button>
 
-      <!-- Заголовок -->
       <div class="flex flex-col items-center mb-6">
         <div
           class="w-12 h-12 bg-white/30 rounded-full flex items-center justify-center mb-3"

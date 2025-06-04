@@ -1,6 +1,9 @@
 {
-  "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
-    "types": ["node"]
+    "target": "ES2020",
+    "module": "CommonJS",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true
   }
 }

@@ -12,7 +12,7 @@
     >
       <!-- Логотип -->
       <NuxtLink to="/" class="flex items-center flex-shrink-0 z-10">
-        <span class="text-xl font-bold text-white">PhotoHub</span>
+        <span class="text-xl font-bold text-white">DarkFocus</span>
       </NuxtLink>
 
       <!-- Навигация -->

@@ -4,7 +4,13 @@ export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
 
-  modules: ["@nuxt/fonts", "@nuxt/scripts", "@nuxt/ui", "nuxt-icon"],
+  modules: [
+    "@pinia/nuxt", // ✅ Підключаємо Pinia
+    "@nuxt/fonts",
+    "@nuxt/scripts",
+    "@nuxt/ui",
+    "nuxt-icon",
+  ],
 
   css: ["~/assets/css/main.css"],
 

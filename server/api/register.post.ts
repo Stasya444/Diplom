@@ -27,10 +27,8 @@ export default defineEventHandler(async (event) => {
       return { success: false, message: "Паролі не збігаються" };
     }
 
-    // 🔐 Хешування паролю
     const hashedPassword = await hash(password, 10);
 
-    // 🧾 Створення користувача
     const user = await prisma.user.create({
       data: {
         name,
@@ -40,12 +38,12 @@ export default defineEventHandler(async (event) => {
       },
     });
 
-    // 🪪 Генерація JWT токена
+    // Генерація JWT токена
     const token = jwt.sign({ id: user.id, role: user.role }, "secret_key", {
       expiresIn: "7d",
     });
 
-    // 🍪 Збереження токена в cookie
+    // Збереження токена в cookie
     setCookie(event, "token", token, {
       httpOnly: true,
       path: "/",
@@ -62,7 +60,6 @@ export default defineEventHandler(async (event) => {
       },
     };
   } catch (error) {
-    // ⚠️ Обробка помилки дублікату email
     if (
       typeof error === "object" &&
       error !== null &&
@@ -75,7 +72,6 @@ export default defineEventHandler(async (event) => {
       };
     }
 
-    // 🛠️ Загальна помилка сервера
     console.error("Помилка реєстрації:", error);
     return {
       success: false,
