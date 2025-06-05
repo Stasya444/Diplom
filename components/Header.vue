@@ -33,7 +33,6 @@
         </div>
       </nav>
 
-      <!-- Кнопки входу / вітання -->
       <div class="flex items-center space-x-3 z-10">
         <template v-if="auth">
           <span class="text-white text-sm">Привіт {{ auth.name }}</span>
