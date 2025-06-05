@@ -53,7 +53,7 @@ export default defineEventHandler(async (event) => {
       style: fields.style,
       price: Number(fields.price),
       about: fields.about,
-      isVerified: false, // 👉 додаємо статус
+      isVerified: false,
     },
   });
 
