@@ -36,7 +36,7 @@
       <!-- Кнопки входу / вітання -->
       <div class="flex items-center space-x-3 z-10">
         <template v-if="auth">
-          <span class="text-white text-sm">Привіт, {{ auth.name }}</span>
+          <span class="text-white text-sm">Привіт {{ auth.name }}</span>
           <button
             @click="logout"
             class="px-4 py-2 rounded-md border border-white/40 text-white text-sm font-medium hover:bg-white/20 transition-all duration-300"
@@ -121,7 +121,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import AuthModal from "~/components/Modalka.vue";
 
 const isMenuOpen = ref(false);
@@ -146,6 +146,20 @@ function logout() {
   auth.value = null;
   navigateTo("/");
 }
+
+onMounted(async () => {
+  try {
+    const res = await fetch("/api/user");
+    if (res.ok) {
+      const userData = await res.json();
+      if (userData && userData.id) {
+        auth.value = userData;
+      }
+    }
+  } catch (err) {
+    console.error("❌ Помилка при отриманні сесії:", err);
+  }
+});
 </script>
 
 <style scoped>

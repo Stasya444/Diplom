@@ -5,17 +5,21 @@ import jwt from "jsonwebtoken";
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event);
-    const { name, email, password, confirmPassword, role } = body;
+    const { name, email, phone, password, confirmPassword, role } = body;
 
     // 🔒 Валідація
     if (!name || !email || !password || !confirmPassword || !role) {
       return { success: false, message: "Усі поля обов’язкові" };
     }
-
-    if (!email.includes("@") || email.length < 5) {
-      return { success: false, message: "Некоректний email" };
+    // Перевірка gmail-пошти
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+    if (!emailRegex.test(email)) {
+      return {
+        success: false,
+        message:
+          "Email має бути у форматі Gmail (наприклад, example@gmail.com)",
+      };
     }
-
     if (password.length < 6) {
       return {
         success: false,

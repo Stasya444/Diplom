@@ -99,6 +99,15 @@
           />
         </div>
 
+        <div>
+          <input
+            v-model="form.phone"
+            type="number"
+            placeholder="Номер телефону"
+            class="w-full px-4 py-3 bg-white/20 backdrop-blur-sm border border-white/40 rounded-xl text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
+          />
+        </div>
+
         <!-- Пароль -->
         <div>
           <input

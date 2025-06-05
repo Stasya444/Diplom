@@ -1,34 +1,16 @@
-import { getCookie } from "h3";
+// server/api/user.ts
 import jwt from "jsonwebtoken";
-import { prisma } from "~/server/utils/prisma";
+import { getCookie } from "h3";
 
 export default defineEventHandler(async (event) => {
-  const token = getCookie(event, "token");
-
-  if (!token) {
-    return { role: "guest" };
-  }
-
   try {
-    const decoded = jwt.verify(token, "secret_key") as {
-      id: number;
-      role: string;
-    };
+    const token = getCookie(event, "token");
 
-    const user = await prisma.user.findUnique({
-      where: { id: decoded.id },
-    });
+    if (!token) return { role: "guest" };
 
-    if (!user) {
-      return { role: "guest" };
-    }
-
-    return {
-      id: user.id,
-      name: user.name,
-      role: user.role,
-    };
-  } catch (err) {
+    const decoded = jwt.verify(token, "secret_key");
+    return decoded; // { id, role }
+  } catch (error) {
     return { role: "guest" };
   }
 });
