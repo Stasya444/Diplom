@@ -36,13 +36,7 @@
           type="number"
           placeholder="Ціна (грн)"
           required
-          class="input-glass"
-        />
-        <input
-          v-model="form.email"
-          type="email"
-          placeholder="Email"
-          required
+          min="0"
           class="input-glass"
         />
       </div>
@@ -53,7 +47,7 @@
         rows="4"
         required
         class="input-glass w-full"
-      />
+      ></textarea>
 
       <div>
         <label class="block mb-2 text-sm text-white/70">
@@ -61,6 +55,7 @@
         </label>
         <input
           type="file"
+          accept="image/*"
           multiple
           @change="handleFiles"
           class="input-glass file:px-3 file:py-1 file:rounded-full file:border-0 file:bg-white/20 file:text-white hover:file:bg-white/30"
@@ -71,9 +66,9 @@
         <button
           type="submit"
           :disabled="loading"
-          class="px-6 py-2 rounded-xl bg-white/10 border border-white/20 text-white hover:bg-white/20 transition-all shadow-lg"
+          class="px-6 py-2 rounded-xl bg-white/10 border border-white/20 text-white hover:bg-white/20 transition-all shadow-lg mx-auto disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {{ loading ? "Збереження..." : "Додати фотографа" }}
+          {{ loading ? "Збереження..." : "Зберегти" }}
         </button>
 
         <transition name="fade">
@@ -96,6 +91,13 @@
 <script setup>
 import { ref } from "vue";
 
+const props = defineProps({
+  userId: {
+    type: String,
+    required: true,
+  },
+});
+
 const form = ref({
   firstName: "",
   lastName: "",
@@ -103,7 +105,6 @@ const form = ref({
   style: "",
   price: null,
   about: "",
-  email: "",
 });
 
 const files = ref([]);
@@ -116,41 +117,43 @@ function handleFiles(e) {
 }
 
 async function handleSubmit() {
+  if (loading.value) return;
+  
   loading.value = true;
   error.value = "";
   showSuccess.value = false;
 
-  // Перевірка унікальності email або імені
-  const checkRes = await fetch(
-    `/api/check-duplicate?email=${form.value.email}&name=${form.value.firstName}`
-  );
-  const checkData = await checkRes.json();
-  if (!checkRes.ok || checkData.exists) {
-    error.value = "Фотограф з таким імʼям або email вже існує";
-    loading.value = false;
-    return;
-  }
-
-  const formData = new FormData();
-  for (const key in form.value) {
-    formData.append(key, form.value[key]);
-  }
-  files.value.forEach((file) => formData.append("photos", file));
-
   try {
+    const formData = new FormData();
+    for (const key in form.value) {
+      if (form.value[key] !== null) {
+        formData.append(key, form.value[key]);
+      }
+    }
+    formData.append("userId", props.userId);
+
     const res = await fetch("/api/photographers", {
       method: "POST",
       body: formData,
     });
 
-    const data = await res.json();
-    if (!res.ok || !data.success) throw new Error(data.message);
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.message || "Помилка сервера");
+    }
 
+    const data = await res.json();
+    if (!data.success) {
+      throw new Error(data.message || "Помилка при збереженні");
+    }
+
+    error.value = "";
     showSuccess.value = true;
     setTimeout(() => {
       showSuccess.value = false;
     }, 3000);
 
+    // Сброс формы
     form.value = {
       firstName: "",
       lastName: "",
@@ -158,11 +161,11 @@ async function handleSubmit() {
       style: "",
       price: null,
       about: "",
-      email: "",
     };
     files.value = [];
   } catch (err) {
-    error.value = err.message || "Помилка";
+    error.value = err.message || "Сталася помилка";
+    console.error("Помилка при відправці форми:", err);
   } finally {
     loading.value = false;
   }
@@ -196,10 +199,5 @@ async function handleSubmit() {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
-}
-
-body {
-  background-color: #0b0b0b;
-  color: #ffffff;
 }
 </style>

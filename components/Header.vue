@@ -35,7 +35,7 @@
 
       <div class="hidden md:flex items-center space-x-3 z-10">
         <template v-if="store.isLoggedIn">
-          <span class="text-white text-sm">Привіт, <LazyNuxtLink class="hover:underline text-neutral-400" :to="'/photographers/'+store.userId">{{store.userName}}</LazyNuxtLink></span>
+          <span class="text-white text-sm">Привіт, <LazyNuxtLink class="hover:underline text-neutral-400" :to="'/user/'+store.userId">{{store.userName}}</LazyNuxtLink></span>
           <button
             @click="logout"
             class="px-4 py-2 rounded-md border border-white/40 text-white text-sm font-medium hover:bg-white/20 transition-all duration-300"
@@ -100,7 +100,7 @@
               </button>
             </template>
             <template v-else>
-              <div class="text-white text-sm">Привіт, <LazyNuxtLink class="hover:underline text-neutral-400" :to="'/photographers/'+store.userId">{{store.userName}}</LazyNuxtLink></div>
+              <div class="text-white text-sm">Привіт, <LazyNuxtLink class="hover:underline text-neutral-400" :to="'/user/'+store.userId">{{store.userName}}</LazyNuxtLink></div>
               <button
                 @click="logout"
                 class="w-full mt-2 px-4 py-3 rounded-md border border-white/40 bg-white/20 text-white text-sm font-medium hover:bg-white/30 transition"
@@ -125,7 +125,6 @@ import {useUserStore} from "~/stores/user";
 
 const isMenuOpen = ref(false);
 const showAuthModal = ref(false);
-const auth = useAuth();
 const store = useUserStore();
 
 const links = computed(() => {

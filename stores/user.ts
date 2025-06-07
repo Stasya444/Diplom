@@ -42,6 +42,6 @@ export const useUserStore = defineStore('user', {
         // Повертаємо роль користувача, якщо він є
         userRole: (state) => state.user?.role || null,
         // Повертаємо статус авторизації
-        isLoggedIn: (state) => state.isAuthenticated,
+        isLoggedIn: (state) => state.isAuthenticated && state.user?.id,
     },
 })
