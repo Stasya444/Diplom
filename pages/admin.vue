@@ -35,10 +35,8 @@ import { ref, onMounted } from "vue";
 const photographers = ref([]);
 
 onMounted(async () => {
-  const { data } = await useFetch(
-    "/api/photographers/get-unverified-photographers"
-  );
-  photographers.value = data.value || [];
+  const response = await $fetch("/api/photographers/get-unverified-photographers");
+  photographers.value = response || [];
 });
 
 const verifyPhotographer = async (id) => {

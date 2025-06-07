@@ -5,11 +5,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const store = useUserStore(); // Отримання сховища користувача
   const token = useCookie('token').value; // Отримання токена з cookie
   const decodedToken = await $fetch('/api/getuser/bytoken/' + token); // Декодування токена для отримання даних користувача
-  if (!token && to.path.startsWith('/admin')) { // Якщо немає токена і шлях починається з /admin
-    if (to.path !== '/') { // Якщо шлях не головна сторінка
-      return navigateTo('/'); // Перенаправлення на головну сторінку
-    }
-  }
   if (!store.isLoggedIn && decodedToken) { // Якщо користувач не залогінений і є токен
     try {
       store.logout(); // Вихід з системи, якщо користувач не залогінений
@@ -21,6 +16,9 @@ export default defineNuxtRouteMiddleware(async (to) => {
       });
     } catch (error) { // Обробка помилки при встановленні користувача
       console.error('Error setting user:', error); // Логування помилки
+    }
+    if(store.userRole != 'admin' && to.path.startsWith('/admin')) { // Якщо роль користувача не admin і шлях починається з /admin
+      return navigateTo('/'); // Перенаправлення на головну сторінку
     }
   }
 });

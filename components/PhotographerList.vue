@@ -83,6 +83,14 @@
   </div>
 </template>
 
+<style scoped>
+option {
+  background-color: rgba(30, 30, 30, 0.95);
+  color: #fff;
+}
+</style>
+
+
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import PhotographerCard from "~/components/PhotographerCard.vue";
