@@ -1,81 +1,54 @@
 <template>
-  <div
-    v-if="!photographer"
-    class="min-h-screen flex items-center justify-center bg-black text-white text-xl"
-  >
+  <div v-if="!photographer" class="min-h-screen flex items-center justify-center bg-black text-white text-xl">
     Завантаження...
   </div>
 
-  <div
-    v-else
-    class="min-h-screen bg-gradient-to-br from-black to-gray-900 p-10 flex items-center justify-center"
-  >
-    <div
-      class="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 shadow-2xl max-w-4xl w-full"
-    >
-      <h1 class="text-3xl font-light text-white mb-4 text-center">
-        {{ photographer.name }}
-      </h1>
+  <div v-else class="min-h-screen bg-black/50 backdrop-blur-lg text-white p-6 md:p-10 flex items-center justify-center">
+    <div class="bg-white/10 border border-white/20 rounded-2xl shadow-2xl p-6 w-full max-w-4xl backdrop-blur-md">
+      <!-- Имя -->
+      <h1 class="text-3xl font-semibold text-center mb-6">{{ photographer.name }}</h1>
 
+      <!-- Аватар -->
       <div class="flex justify-center mb-6">
-        <img
-          :src="photographer.avatar"
-          alt="Аватар"
-          class="w-36 h-36 rounded-full object-cover border-2 border-blue-500/30 shadow-lg grayscale"
-        />
+        <img :src="photographer.avatar" class="w-36 h-36 rounded-full object-cover border-2 border-white/30 shadow-lg" />
       </div>
 
-      <div class="text-center space-y-2 text-white/80 mb-6">
-        <p class="text-lg italic opacity-80">“{{ photographer.about }}”</p>
-        <p>
-          📍 {{ photographer.city }} • 🎭 {{ photographer.style }} • 💵
-          {{ photographer.price }}₴
-        </p>
+      <!-- Описание -->
+      <div class="text-center space-y-2 mb-6 text-white/80">
+        <p class="italic">“{{ photographer.about }}”</p>
+        <p>📍 {{ photographer.city }} • 🎭 {{ photographer.style }} • 💵 {{ photographer.price }}₴</p>
       </div>
 
-      <p class="text-sm text-white/60">
-        {{
-          formatPhotographerStats(
-            photographer.ordersCount,
-            photographer.experience
-          )
-        }}
-      </p>
-      <p v-if="photographer.rating" class="text-white/80 text-sm mt-1">
-        ⭐ {{ photographer.rating.toFixed(1) }}/5
-      </p>
-      <p v-else class="text-white/40 text-sm mt-1 italic">
-        Рейтинг ще не сформовано
-      </p>
+      <!-- Статистика -->
+      <p class="text-sm text-white/60">{{ formatPhotographerStats(photographer.ordersCount, photographer.experience) }}</p>
+      <p v-if="photographer.rating" class="text-sm text-white/80 mt-1">⭐ {{ photographer.rating.toFixed(1) }}/5</p>
+      <p v-else class="text-sm text-white/40 mt-1 italic">Рейтинг ще не сформовано</p>
 
+      <!-- Фото -->
       <div class="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4">
         <img
-          v-for="(photo, i) in photographer.photos"
-          :key="i"
-          :src="photo.url"
-          class="rounded-lg object-cover w-full h-40 hover:scale-105 transition cursor-pointer shadow"
-          @click="openPhoto(i)"
+            v-for="(photo, i) in photographer.photos"
+            :key="i"
+            :src="photo.url"
+            class="rounded-xl object-cover w-full h-40 hover:scale-105 transition-transform duration-300 cursor-pointer shadow-md"
+            @click="openPhoto(i)"
         />
       </div>
 
-      <div class="mt-8 border-t border-white/10 pt-4">
-        <h2 class="text-xl text-white mb-3 font-light">Відгуки</h2>
-        <div v-if="photographer.reviews.length" class="space-y-3">
-          <div
-            v-for="review in photographer.reviews"
-            :key="review.id"
-            class="bg-white/10 p-3 rounded-md text-white/80 flex justify-between"
-          >
+      <!-- Відгуки -->
+      <div class="mt-10 border-t border-white/20 pt-6">
+        <h2 class="text-xl font-semibold mb-4">Відгуки</h2>
+
+        <div v-if="photographer.reviews.length" class="space-y-4">
+          <div v-for="review in photographer.reviews" :key="review.id" class="bg-white/10 rounded-xl p-4 flex justify-between items-start">
             <div>
-              <p class="text-sm italic">“{{ review.comment }}”</p>
-              <p class="text-xs text-blue-400 mt-1">
-                Оцінка: {{ review.rating }}/5
-              </p>
+              <p class="italic text-sm">“{{ review.comment }}”</p>
+              <p class="text-xs text-blue-400 mt-1">Оцінка: {{ review.rating }}/5</p>
             </div>
             <button
-              v-if="userRole === 'admin'"
-              @click="deleteReview(review.id)"
-              class="text-red-400 hover:text-red-600 text-xs"
+                v-if="userRole === 'admin'"
+                @click="deleteReview(review.id)"
+                class="text-red-400 hover:text-red-600 text-xs transition"
             >
               Видалити
             </button>
@@ -83,34 +56,36 @@
         </div>
         <p v-else class="text-white/40 italic">Ще немає відгуків</p>
 
-        <div v-if="userRole === 'user'" class="mt-4">
-          <h3 class="text-white text-sm mb-2">Залишити відгук</h3>
+        <!-- Додати відгук -->
+        <div v-if="userRole === 'user'" class="mt-6 space-y-3">
+          <h3 class="text-white text-sm">Залишити відгук</h3>
           <input
-            v-model="newReview.comment"
-            placeholder="Ваш коментар"
-            class="w-full px-3 py-2 rounded bg-white/10 text-white placeholder-white/40 border border-white/20"
+              v-model="newReview.comment"
+              placeholder="Ваш коментар"
+              class="w-full px-4 py-3 bg-white/10 border border-white/20 text-white rounded-xl placeholder-white/50"
           />
           <input
-            v-model.number="newReview.rating"
-            type="number"
-            min="1"
-            max="5"
-            placeholder="Оцінка (1-5)"
-            class="w-full mt-2 px-3 py-2 rounded bg-white/10 text-white placeholder-white/40 border border-white/20"
+              v-model.number="newReview.rating"
+              type="number"
+              min="1"
+              max="5"
+              placeholder="Оцінка (1-5)"
+              class="w-full px-4 py-3 bg-white/10 border border-white/20 text-white rounded-xl placeholder-white/50"
           />
           <button
-            @click="submitReview"
-            class="mt-2 px-4 py-2 bg-blue-600/30 hover:bg-blue-600/50 text-white rounded"
+              @click="submitReview"
+              class="w-full py-3 bg-blue-600/30 hover:bg-blue-600/50 text-white rounded-xl transition"
           >
             Надіслати
           </button>
         </div>
       </div>
 
-      <div class="mt-6 text-center">
+      <!-- Кнопка бронювання -->
+      <div class="mt-10 text-center">
         <button
-          @click="showBooking = true"
-          class="px-6 py-2 text-white bg-blue-600/30 hover:bg-blue-600/50 rounded-full border border-blue-400/40 shadow-lg transition"
+            @click="showBooking = true"
+            class="px-6 py-3 bg-blue-600/30 hover:bg-blue-600/50 text-white rounded-full border border-blue-400/40 shadow-lg transition"
         >
           📅 Забронювати
         </button>
@@ -118,49 +93,27 @@
     </div>
   </div>
 
-  <!-- 🌟 Модальне вікно бронювання -->
-  <div
-    v-if="showBooking"
-    class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
-  >
-    <div class="bg-white p-6 rounded-xl w-full max-w-md text-black relative">
+  <!-- Модалка -->
+  <div v-if="showBooking" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50">
+    <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl w-full max-w-md text-white border border-white/20 shadow-lg">
       <h3 class="text-xl mb-4 text-center font-semibold">Бронювання</h3>
 
-      <input
-        v-model="booking.name"
-        type="text"
-        placeholder="Ваше ім’я"
-        class="w-full mb-3 px-4 py-2 border rounded"
-      />
-      <input
-        v-model="booking.phone"
-        type="tel"
-        placeholder="Номер телефону"
-        class="w-full mb-3 px-4 py-2 border rounded"
-      />
-      <input
-        v-model="booking.date"
-        type="date"
-        class="w-full mb-4 px-4 py-2 border rounded"
-      />
+      <input v-model="booking.name" type="text" placeholder="Ваше ім’я" class="w-full mb-3 px-4 py-3 bg-white/10 border border-white/20 rounded-xl placeholder-white/60" />
+      <input v-model="booking.phone" type="tel" placeholder="Номер телефону" class="w-full mb-3 px-4 py-3 bg-white/10 border border-white/20 rounded-xl placeholder-white/60" />
+      <input v-model="booking.date" type="date" class="w-full mb-4 px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white" />
 
-      <div class="flex justify-end gap-2">
-        <button
-          @click="showBooking = false"
-          class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-        >
+      <div class="flex justify-end gap-3">
+        <button @click="showBooking = false" class="px-4 py-2 rounded-xl bg-white/10 border border-white/20 text-white hover:bg-white/20 transition">
           Скасувати
         </button>
-        <button
-          @click="submitBooking"
-          class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
+        <button @click="submitBooking" class="px-4 py-2 rounded-xl bg-blue-600/40 hover:bg-blue-600/60 text-white transition">
           Підтвердити
         </button>
       </div>
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { useRoute } from "vue-router";
