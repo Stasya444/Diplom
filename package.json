@@ -25,6 +25,7 @@
     "bcryptjs": "^3.0.2",
     "jsonwebtoken": "^9.0.2",
     "nuxt": "^3.16.2",
+    "pinia": "^3.0.3",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"
   },

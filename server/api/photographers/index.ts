@@ -11,5 +11,5 @@ export default defineEventHandler(async () => {
     },
   });
 
-  return photographers;
+  return photographers || {};
 });

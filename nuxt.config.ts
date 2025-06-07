@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   modules: [
-    "@pinia/nuxt", // ✅ Підключаємо Pinia
+    "@pinia/nuxt",
     "@nuxt/fonts",
     "@nuxt/scripts",
     "@nuxt/ui",
@@ -17,7 +17,9 @@ export default defineNuxtConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-
+  pinia: {
+      storesDirs: ['./stores/**'],
+    },
   components: [
     {
       path: "~/assets/pages/components",
@@ -26,6 +28,6 @@ export default defineNuxtConfig({
   ],
 
   nitro: {
-    publicAssets: [{ dir: "public" }], // Щоб працювало завантаження фото
+    publicAssets: [{ dir: "public" }],
   },
 });

@@ -78,67 +78,89 @@
       </div>
 
       <!-- Форма -->
-      <form @submit.prevent="handleSubmit" class="space-y-4">
-        <!-- Імʼя -->
-        <div v-if="!isLogin">
-          <input
-            v-model="form.name"
-            type="text"
-            placeholder="Ім'я"
-            class="w-full px-4 py-3 bg-white/20 backdrop-blur-sm border border-white/40 rounded-xl text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
-          />
-        </div>
+      <form @submit.prevent="handleSubmit">
 
-        <!-- Email -->
-        <div>
-          <input
-            v-model="form.email"
-            type="email"
-            placeholder="Email"
-            class="w-full px-4 py-3 bg-white/20 backdrop-blur-sm border border-white/40 rounded-xl text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
-          />
-        </div>
+        <div class="gap-3 flex flex-col mb-6" v-if="isLogin">
+          <div>
+            <input
+              v-model="form.email"
+              type="text"
+              placeholder="Email / Номер телефону"
+              class="w-full px-4 py-3 bg-white/20 backdrop-blur-sm border border-white/40 rounded-xl text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
+            />
+          </div>
 
-        <div>
-          <input
-            v-model="form.phone"
-            type="number"
-            placeholder="Номер телефону"
-            class="w-full px-4 py-3 bg-white/20 backdrop-blur-sm border border-white/40 rounded-xl text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
-          />
+          <!-- Пароль -->
+          <div>
+            <input
+              v-model="form.password"
+              type="password"
+              placeholder="Пароль"
+              class="w-full px-4 py-3 bg-white/20 backdrop-blur-sm border border-white/40 rounded-xl text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
+            />
+          </div>
         </div>
+        <div class="gap-3 flex flex-col mb-6" v-else>
+          <!-- Імʼя -->
+          <div>
+            <input
+              v-model="form.name"
+              type="text"
+              placeholder="Ім'я"
+              class="w-full px-4 py-3 bg-white/20 backdrop-blur-sm border border-white/40 rounded-xl text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
+            />
+          </div>
 
-        <!-- Пароль -->
-        <div>
-          <input
-            v-model="form.password"
-            type="password"
-            placeholder="Пароль"
-            class="w-full px-4 py-3 bg-white/20 backdrop-blur-sm border border-white/40 rounded-xl text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
-          />
-        </div>
+          <!-- Email -->
+          <div>
+            <input
+              v-model="form.email"
+              type="email"
+              placeholder="Email"
+              class="w-full px-4 py-3 bg-white/20 backdrop-blur-sm border border-white/40 rounded-xl text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
+            />
+          </div>
 
-        <!-- Підтвердження пароля -->
-        <div v-if="!isLogin">
-          <input
-            v-model="form.confirmPassword"
-            type="password"
-            placeholder="Повторіть пароль"
-            class="w-full px-4 py-3 bg-white/20 backdrop-blur-sm border border-white/40 rounded-xl text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
-          />
-        </div>
+          <div class="flex items-center">
+            <input v-if="!form.phone.includes('+380') && !form.phone.includes('+')" type="text" placeholder="+380" value="+380" disabled class="w-16 text-center py-3 bg-white/20 backdrop-blur-sm border border-white/40 rounded-s-xl text-gray-300">
+            <input
+              v-model="form.phone"
+              type="text"
+              placeholder="Номер телефону"
+              class="w-full px-4 py-3 bg-white/20 backdrop-blur-sm border border-white/40 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
+              :class="form.phone.includes('+380') || form.phone.includes('+') ? 'rounded-xl' : 'rounded-e-xl'"
+            />
+          </div>
 
-        <!-- Вибір ролі -->
-        <div v-if="!isLogin">
-          <select
-            v-model="form.role"
-            class="w-full px-4 py-3 bg-white/20 backdrop-blur-sm border border-white/40 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-          >
-            <option disabled value="">Оберіть роль</option>
-            <option value="guest">Гість</option>
-            <option value="photographer">Фотограф</option>
-          </select>
+          <!-- Пароль -->
+          <div>
+            <input
+              v-model="form.password"
+              type="password"
+              placeholder="Пароль"
+              class="w-full px-4 py-3 bg-white/20 backdrop-blur-sm border border-white/40 rounded-xl text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
+            />
+          </div>
+
+          <!-- Підтвердження пароля -->
+          <div>
+            <input
+              v-model="form.confirmPassword"
+              type="password"
+              placeholder="Повторіть пароль"
+              class="w-full px-4 py-3 bg-white/20 backdrop-blur-sm border border-white/40 rounded-xl text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
+            />
+          </div>
+
+          <!-- Вибір ролі -->
+          <div>
+            <span class="flex items-center gap-2 text-white/80">
+              <input class="" type="checkbox" v-model="form.role" id="isPhotographer" />
+              <label for="isPhotographer">Я фотограф</label>
+            </span>
+          </div>
         </div>
+        
 
         <!-- Кнопка -->
         <button
@@ -167,7 +189,11 @@
 </template>
 
 <script setup>
+import { fromJSON } from "postcss";
+import { use } from "react";
 import { ref } from "vue";
+import {useUserStore} from "~/stores/user";
+ 
 
 const show = defineModel("show");
 const isLogin = ref(true);
@@ -175,10 +201,12 @@ const message = ref("");
 const form = ref({
   name: "",
   email: "",
+  phone: "",
   password: "",
   confirmPassword: "",
   role: "",
 });
+
 
 function close() {
   show.value = false;
@@ -191,9 +219,6 @@ function close() {
   };
   message.value = "";
 }
-
-import { useAuth } from "~/composables/useAuth";
-const auth = useAuth();
 
 async function handleSubmit() {
   message.value = "";
@@ -220,21 +245,33 @@ async function handleSubmit() {
     }
   }
 
+
   const endpoint = isLogin.value ? "/api/login" : "/api/register";
 
   try {
+    if(!isLogin.value) {
+      if(!form.value.phone.startsWith('+380')) {
+        let phone = "+380" + form.value.phone
+        form.value.phone = phone;
+
+        console.log("Phone number updated to:", form.value.phone);
+      }
+    }
+
     const res = await $fetch(endpoint, {
       method: "POST",
       body: form.value,
     });
 
     if (res.success) {
-      auth.value = res.user; // ← це головне!
+      // auth.value = res.user;
+      useUserStore().setUser(res.user);
       close();
     } else {
       message.value = res.message || "Сталася помилка";
     }
   } catch (err) {
+    console.error("❌ Помилка при авторизації:", err);
     message.value = "Помилка сервера";
   }
 }

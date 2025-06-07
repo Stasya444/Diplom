@@ -7,12 +7,12 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event);
     const { name, email, phone, password, confirmPassword, role } = body;
 
-    // 🔒 Валідація
-    if (!name || !email || !password || !confirmPassword || !role) {
+    // Валідація
+    if (!name.trim() || !email.trim() || !password.trim() || !confirmPassword.trim() || role == undefined) {
       return { success: false, message: "Усі поля обов’язкові" };
     }
-    // Перевірка gmail-пошти
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+    // Валідація email
+    const emailRegex = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/gm; // username@domain.com
     if (!emailRegex.test(email)) {
       return {
         success: false,
@@ -20,10 +20,24 @@ export default defineEventHandler(async (event) => {
           "Email має бути у форматі Gmail (наприклад, example@gmail.com)",
       };
     }
-    if (password.length < 6) {
+    if(!phone.startsWith("+380") || phone.length !== 13) {
+      return {
+        success: false,
+        message: "Телефон має починатися з +380 і містити 12 символів",
+      }
+    }
+    // Якщо пароль більше 24 символів
+    if (password.trim().length < 6) {
       return {
         success: false,
         message: "Пароль має містити мінімум 6 символів",
+      };
+    }
+    // Якщо пароль більше 24 символів
+    if (password.trim().length > 24) {
+      return {
+        success: false,
+        message: "Пароль не має перевищувати 24 символи",
       };
     }
 
@@ -38,7 +52,7 @@ export default defineEventHandler(async (event) => {
         name,
         email,
         password: hashedPassword,
-        role,
+        role: role ? "photographer" : "guest",
       },
     });
 

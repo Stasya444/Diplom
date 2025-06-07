@@ -1,7 +1,6 @@
-<!-- 📄 pages/photographers.vue -->
 <template>
   <div class="max-w-7xl mx-auto px-6 py-10 text-white">
-    <!-- Фільтри з глессморфізмом -->
+    <!-- Фільтри -->
     <div
       class="backdrop-blur-lg bg-white/5 border border-white/10 rounded-xl p-6 mb-10 shadow-md"
     >
@@ -55,14 +54,14 @@
       </div>
     </div>
 
-    <!-- ⏳ Завантаження -->
+    <!-- Завантаження -->
     <div v-if="loading" class="text-center py-10">
       <p class="text-gray-600 dark:text-gray-300">Завантаження фотографів...</p>
     </div>
 
-    <!-- 🥲 Нічого не знайдено -->
+    <!-- Нічого не знайдено -->
     <div v-else-if="!filteredPhotographers.length" class="text-center py-10">
-      <p class="text-lg text-gray-600 dark:text-gray-300">
+      <p class="text-lg text-gray-600 dark:text-gray-400">
         Фотографів не знайдено
       </p>
       <p

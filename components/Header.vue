@@ -33,9 +33,9 @@
         </div>
       </nav>
 
-      <div class="flex items-center space-x-3 z-10">
-        <template v-if="auth">
-          <span class="text-white text-sm">Привіт {{ auth.name }}</span>
+      <div class="hidden md:flex items-center space-x-3 z-10">
+        <template v-if="store.isLoggedIn">
+          <span class="text-white text-sm">Привіт, <LazyNuxtLink class="hover:underline text-neutral-400" :to="'/photographers/'+store.userId">{{store.userName}}</LazyNuxtLink></span>
           <button
             @click="logout"
             class="px-4 py-2 rounded-md border border-white/40 text-white text-sm font-medium hover:bg-white/20 transition-all duration-300"
@@ -52,30 +52,29 @@
             Увійти
           </button>
         </template>
-
-        <!-- Гамбургер -->
-        <button
-          @click="isMenuOpen = !isMenuOpen"
-          class="md:hidden text-white/70 hover:text-white z-10"
-          :class="{ 'text-white': isMenuOpen }"
-        >
-          <svg
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
-        </button>
       </div>
 
       <!-- Мобільне меню -->
+      <!-- Гамбургер -->
+      <button
+        @click="isMenuOpen = !isMenuOpen"
+        class="md:hidden text-white/70 hover:text-white z-10"
+        :class="{ 'text-white': isMenuOpen }"
+      >
+        <svg
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
+      </button>
       <transition name="fade">
         <div
           v-if="isMenuOpen"
@@ -92,7 +91,7 @@
             >
               {{ link.title }}
             </NuxtLink>
-            <template v-if="!auth">
+            <template v-if="!store.isLoggedIn">
               <button
                 @click="showAuthModal = true"
                 class="w-full mt-2 px-4 py-3 rounded-md border border-white/40 text-white text-sm font-medium hover:bg-white/20 transition"
@@ -101,7 +100,7 @@
               </button>
             </template>
             <template v-else>
-              <div class="text-white text-sm">Привіт, {{ auth.name }}</div>
+              <div class="text-white text-sm">Привіт, <LazyNuxtLink class="hover:underline text-neutral-400" :to="'/photographers/'+store.userId">{{store.userName}}</LazyNuxtLink></div>
               <button
                 @click="logout"
                 class="w-full mt-2 px-4 py-3 rounded-md border border-white/40 bg-white/20 text-white text-sm font-medium hover:bg-white/30 transition"
@@ -122,10 +121,12 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import AuthModal from "~/components/Modalka.vue";
+import {useUserStore} from "~/stores/user";
 
 const isMenuOpen = ref(false);
 const showAuthModal = ref(false);
 const auth = useAuth();
+const store = useUserStore();
 
 const links = computed(() => {
   const allLinks = [
@@ -133,7 +134,7 @@ const links = computed(() => {
     { path: "/photographers", title: "ФОТОГРАФИ" },
   ];
 
-  if (auth.value?.role === "admin") {
+  if (store.userRole === "admin") {
     allLinks.push({ path: "/admin", title: "АДМІН ПАНЕЛЬ" });
     allLinks.push({ path: "/add-photographer", title: "ДОДАТИ ФОТОГРАФА" });
   }
@@ -142,23 +143,12 @@ const links = computed(() => {
 });
 
 function logout() {
-  auth.value = null;
+  const response = $fetch("/api/logout");
+  store.logout();
   navigateTo("/");
 }
 
-onMounted(async () => {
-  try {
-    const res = await fetch("/api/user");
-    if (res.ok) {
-      const userData = await res.json();
-      if (userData && userData.id) {
-        auth.value = userData;
-      }
-    }
-  } catch (err) {
-    console.error("❌ Помилка при отриманні сесії:", err);
-  }
-});
+
 </script>
 
 <style scoped>
